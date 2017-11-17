@@ -61,7 +61,7 @@ namespace metro
                 byte r = (byte)reader.GetInt32(1);
                 byte g = (byte)reader.GetInt32(2);
                 byte b = (byte)reader.GetInt32(3);
-                Brush br = new SolidColorBrush(Color.FromRgb(r,g,b));
+                Brush br = new SolidColorBrush(Color.FromRgb(r, g, b));
                 colors.Add(line, br);
             }
 
@@ -92,7 +92,7 @@ namespace metro
                 TextBlock sName = new TextBlock();
                 sName.Text = reader.GetString(1);
                 sName.Foreground = Brushes.Black;
-                sName.FontSize = 12;
+                sName.FontSize = sName.Text.Length > 3 ? 10 : 12;
                 Canvas.SetLeft(sName, reader.GetInt32(2) + 2);
                 Canvas.SetTop(sName, reader.GetInt32(3) + 2);
                 Canvas.SetZIndex(sName, 3);
@@ -144,18 +144,26 @@ namespace metro
                 l.Stroke = l.Fill;
                 l.StrokeThickness = 6;
             }
+            lstStations.Items.Clear();
+            lstStations.Visibility = Visibility.Hidden;
         }
 
         private void btnQuery_Click(object sender, RoutedEventArgs e)
         {
+            map_Reset();
             int _from, _to;
+
+            if (txtStart.Text.Length == 0 || txtEnd.Text.Length == 0)
+            {
+                MessageBox.Show("Query string can not be empty!");
+            }
 
             sql = "select id from stations where name=\"" + txtStart.Text + "\"";
             cmdQ = new SQLiteCommand(sql, conn);
             reader = cmdQ.ExecuteReader();
             if (reader.Read())
             {
-                _from = reader.GetInt32(0);
+                _to = reader.GetInt32(0);
             }
             else
             {
@@ -168,7 +176,7 @@ namespace metro
             reader = cmdQ.ExecuteReader();
             if (reader.Read())
             {
-                _to = reader.GetInt32(0);
+                _from = reader.GetInt32(0);
             }
             else
             {
@@ -184,9 +192,12 @@ namespace metro
             //}
             foreach (Line l in routes.Values)
             {
-                l.Stroke = Brushes.Gray;
+                // l.Stroke = Brushes.Gray;
                 l.StrokeThickness = 6;
             }
+            int _line_num = graph.edges[new NodePair(_to, r[_to])].line;
+            long _length = 0;
+            lstStations.Items.Add("Start at: " + names[_to].Text);
             while (r[_to] != 0)
             {
 
@@ -194,12 +205,30 @@ namespace metro
                 NodePair np = new NodePair(_to, r[_to]);
                 routes[graph.edges[np].routeId].Stroke = Brushes.Green;
                 routes[graph.edges[np].routeId].StrokeThickness = 10;
+
+                if (graph.edges[np].line != _line_num)
+                {
+                    lstStations.Items.Add("↓ Line " + _line_num + ": " + _length + " km");
+                    lstStations.Items.Add("Transfer at: " + names[_to].Text);
+                    _length = 0;
+                }
+                _length += graph.edges[np].length;
+                //lstStations.Items.Add(_length);
+                _line_num = graph.edges[np].line;
+
                 _to = r[_to];
             }
 
+
+
             routes[graph.edges[new NodePair(_to, _from)].routeId].Stroke = Brushes.Green;
             routes[graph.edges[new NodePair(_to, _from)].routeId].StrokeThickness = 10;
+            _length += graph.edges[new NodePair(_to, _from)].length;
+            lstStations.Items.Add("↓ Line " + _line_num + ": " + _length + " km");
+            lstStations.Items.Add("Arrive at: " + names[_from].Text);
 
+            lstStations.Visibility = Visibility.Visible;
+            lstStations.Height = lstStations.Items.Count * (lstStations.FontSize + 10);
             //foreach (KeyValuePair<int, int> i in res)
             //{
             //    MessageBox.Show(names[i.Key].Text + i.Value.ToString());
@@ -257,6 +286,11 @@ namespace metro
                 map_prev_X = e.GetPosition(map).X;
                 map_prev_Y = e.GetPosition(map).Y;
             }
+        }
+
+        private void map_holder_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            map_Reset();
         }
 
 

@@ -7,7 +7,8 @@ using System.Collections;
 
 namespace metro
 {
-    struct NodePair{
+    struct NodePair
+    {
         public int from;
         public int to;
         public NodePair(int from, int to)
@@ -61,7 +62,7 @@ namespace metro
                     else edgesM[i, j] = 99999999;
                 }
             }
-                nodes = new List<int>();
+            nodes = new List<int>();
             //nodes = new Dictionary<int, Node>();
             //edges = new List<Edge>();
         }
@@ -117,7 +118,7 @@ namespace metro
             int u = 0, v;
 
             //Dijkstra
-            for (int i = 1 ; i <= nodes.Count - 1; i++)
+            for (int i = 1; i <= nodes.Count - 1; i++)
             {
                 // nearest point
                 min = 9999999;
@@ -134,10 +135,10 @@ namespace metro
                 {
                     if (edgesM[u, v] < 9999999)
                     {
-                        if (dis[v] > dis[u] + edgesM[u,v])
+                        if (dis[v] > dis[u] + edgesM[u, v])
                         {
                             path[v] = u;
-                            dis[v] = dis[u] + edgesM[u,v];
+                            dis[v] = dis[u] + edgesM[u, v];
                             //if (v == nodeId[idMax]) break;
                         }
                     }
@@ -148,7 +149,8 @@ namespace metro
         }
 
 
-        public Dictionary<int, int> dijkstra(int from){
+        public Dictionary<int, int> dijkstra(int from)
+        {
             Dictionary<int, int> distance = new Dictionary<int, int>();
             List<int> mark = new List<int>();
             Dictionary<int, int> path = new Dictionary<int, int>();
@@ -168,7 +170,7 @@ namespace metro
                     //if (!distance.ContainsKey(j)) distance[j] = 0;
                     if (!mark.Contains(j) && (!distance.ContainsKey(j) || distance[j] < min))
                     {
-                        min = distance.ContainsKey(j)?distance[j]:9999999;
+                        min = distance.ContainsKey(j) ? distance[j] : 9999999;
                         u = j;
                     }
                 }
@@ -177,11 +179,11 @@ namespace metro
                 {
                     if (edges.ContainsKey(new NodePair(u, v)))
                     {
-                        int curL = edges.ContainsKey(new NodePair(u, v))?
-                            edges[new NodePair(u, v)].length:9999999;
+                        int curL = edges.ContainsKey(new NodePair(u, v)) ?
+                            edges[new NodePair(u, v)].length : 9999999;
                         int dv = distance.ContainsKey(v) ? distance[v] : 9999999;
                         int du = distance.ContainsKey(u) ? distance[u] : 9999999;
-                        if (du!=int.MaxValue && curL!=int.MaxValue && dv > du + curL)
+                        if (du != int.MaxValue && curL != int.MaxValue && dv > du + curL)
                         {
                             if (path.ContainsKey(v)) path[v] = u;
                             else path.Add(v, u);
@@ -196,6 +198,8 @@ namespace metro
         }
         public int Astar(int from, int to, int k)
         {
+  
+
             Dictionary<int, int> distance = dijkstra(to);
             if (!distance.ContainsKey(from)) return -1;
             Dictionary<int, int> cnt = new Dictionary<int, int>();
@@ -206,7 +210,7 @@ namespace metro
                 int len = (int)q.GetKey(0);
                 int v = (int)q.GetByIndex(0);
                 q.RemoveAt(0);
-                if (cnt.ContainsKey(v)) cnt[v]++;  
+                if (cnt.ContainsKey(v)) cnt[v]++;
                 else cnt.Add(v, 1);
                 int ct = cnt.ContainsKey(to) ? cnt[to] : 0;
                 if (ct == k) return v;

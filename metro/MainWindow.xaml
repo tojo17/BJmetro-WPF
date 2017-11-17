@@ -4,7 +4,7 @@
         xmlns:Controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit" x:Class="metro.MainWindow"
         Title="Beijing Metro" Height="640" Width="980" Loaded="Window_Loaded">
     <Grid>
-        <Canvas x:Name="map_holder" Margin="0,0,-0.4,0.4" MouseWheel="map_holder_MouseWheel" Background="White" MouseLeftButtonDown="map_holder_MouseLeftButtonDown" MouseLeftButtonUp="map_holder_MouseLeftButtonUp" MouseMove="map_holder_MouseMove">
+        <Canvas x:Name="map_holder" Margin="0,0,-0.4,0.4" MouseWheel="map_holder_MouseWheel" Background="White" MouseLeftButtonDown="map_holder_MouseLeftButtonDown" MouseLeftButtonUp="map_holder_MouseLeftButtonUp" MouseMove="map_holder_MouseMove" MouseRightButtonUp="map_holder_MouseRightButtonUp">
 
             <Canvas x:Name="map" Unloaded="map_Unloaded" Margin="0,0,-0.4,0.4" RenderTransformOrigin="0.5,0.5">
                 <Canvas.RenderTransform>
@@ -14,7 +14,10 @@
                     </TransformGroup>
                 </Canvas.RenderTransform>
             </Canvas>
+
         </Canvas>
+        <ListBox x:Name="lstStations" HorizontalAlignment="Left" Margin="10,117,0,0" VerticalAlignment="Top" Width="226" Height="102" Visibility="Hidden" >
+        </ListBox>
         <TabControl HorizontalAlignment="Left" Height="102" Margin="10,10,0,0" VerticalAlignment="Top" Width="226">
             <TabItem Header="Transfer Query">
                 <Grid Background="#FFE5E5E5">
