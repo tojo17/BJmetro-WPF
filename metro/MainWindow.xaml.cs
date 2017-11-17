@@ -21,6 +21,9 @@ namespace metro
     /// </summary>
     public partial class MainWindow : Window
     {
+        bool map_drag = false;
+        double map_prev_X;
+        double map_prev_Y;
         SQLiteConnection conn;
         Dictionary<int, Ellipse> stations;
         Dictionary<int, Line> routes;
@@ -30,6 +33,8 @@ namespace metro
         string sql;
         SQLiteCommand cmdQ;
         SQLiteDataReader reader;
+        Dictionary<int, Brush> colors;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -37,13 +42,28 @@ namespace metro
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //SQLiteConnection conn = null;
             string dbPath = "Data Source =" + Environment.CurrentDirectory + "/metro.db";
             conn = new SQLiteConnection(dbPath);
-            
+
             conn.Open();
             graph = new Graph();
             lNames = new List<string>();
+
+            sql = "select * from colors";
+            cmdQ = new SQLiteCommand(sql, conn);
+            reader = cmdQ.ExecuteReader();
+
+            colors = new Dictionary<int, Brush>();
+
+            while (reader.Read())
+            {
+                int line = reader.GetInt32(0);
+                byte r = (byte)reader.GetInt32(1);
+                byte g = (byte)reader.GetInt32(2);
+                byte b = (byte)reader.GetInt32(3);
+                Brush br = new SolidColorBrush(Color.FromRgb(r,g,b));
+                colors.Add(line, br);
+            }
 
             sql = "select * from stations";
             cmdQ = new SQLiteCommand(sql, conn);
@@ -56,7 +76,7 @@ namespace metro
             while (reader.Read())
             {
                 graph.addNode(reader.GetInt32(0));
-                
+
                 Ellipse station = new Ellipse();
                 station.StrokeThickness = 2;
                 station.Stroke = Brushes.Black;
@@ -87,14 +107,16 @@ namespace metro
 
             routes = new Dictionary<int, Line>();
 
-            while (reader.Read()){
-                graph.addEdge(reader.GetInt32(0), reader.GetInt32(1), 
+            while (reader.Read())
+            {
+                graph.addEdge(reader.GetInt32(0), reader.GetInt32(1),
                     reader.GetInt32(2), reader.GetInt32(3), reader.GetInt32(4));
 
                 Line route = new Line();
                 route.StrokeThickness = 6;
-                route.Fill = (reader.GetInt32(3) == 1) ? Brushes.Red : Brushes.Blue; //back up color
-                route.Stroke = (reader.GetInt32(3) == 1) ? Brushes.Red : Brushes.Blue;
+
+                route.Fill = colors[reader.GetInt32(3)]; //back up color
+                route.Stroke = colors[reader.GetInt32(3)];
                 route.X1 = Canvas.GetLeft(stations[reader.GetInt32(1)]) + stations[reader.GetInt32(1)].Width / 2;
                 route.Y1 = Canvas.GetTop(stations[reader.GetInt32(1)]) + stations[reader.GetInt32(1)].Width / 2;
                 route.X2 = Canvas.GetLeft(stations[reader.GetInt32(2)]) + stations[reader.GetInt32(2)].Width / 2;
@@ -107,7 +129,7 @@ namespace metro
             //init auto compelete
             txtStart.ItemsSource = lNames;
             txtEnd.ItemsSource = lNames;
-            
+
         }
 
         private void map_Unloaded(object sender, RoutedEventArgs e)
@@ -153,8 +175,8 @@ namespace metro
                 MessageBox.Show(txtEnd.Text + " not found!");
                 return;
             }
-            
-            Dictionary<int,int> res = graph.dijkstra(_from);
+
+            Dictionary<int, int> res = graph.dijkstra(_from);
 
             int[] r = graph.dijM(_from);
             //for (int i=1;i<=graph.nodes.Count;i++){
@@ -165,13 +187,14 @@ namespace metro
                 l.Stroke = Brushes.Gray;
                 l.StrokeThickness = 6;
             }
-            while (r[_to]!=0)
+            while (r[_to] != 0)
             {
 
-                    //MessageBox.Show(names[_to].Text);
-                    routes[graph.edges[new NodePair(_to, r[_to])].routeId].Stroke = Brushes.Green;
-                    routes[graph.edges[new NodePair(_to, r[_to])].routeId].StrokeThickness = 10;
-                    _to = r[_to];
+                //MessageBox.Show(names[_to].Text);
+                NodePair np = new NodePair(_to, r[_to]);
+                routes[graph.edges[np].routeId].Stroke = Brushes.Green;
+                routes[graph.edges[np].routeId].StrokeThickness = 10;
+                _to = r[_to];
             }
 
             routes[graph.edges[new NodePair(_to, _from)].routeId].Stroke = Brushes.Green;
@@ -192,6 +215,48 @@ namespace metro
             txtEnd.Text = tmp;
             map_Reset();
 
+        }
+
+        private void map_holder_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            map_sc.ScaleX *= 1 + e.Delta * 0.001;
+            if (map_sc.ScaleX > 10) map_sc.ScaleX = 10;
+            if (map_sc.ScaleX < 0.1) map_sc.ScaleX = 0.1;
+            map_sc.ScaleY *= 1 + e.Delta * 0.001;
+            if (map_sc.ScaleY > 10) map_sc.ScaleY = 10;
+            if (map_sc.ScaleY < 0.1) map_sc.ScaleY = 0.1;
+            map_sc.CenterX = e.GetPosition(map).X;
+            map_sc.CenterY = e.GetPosition(map).Y;
+            //map_tr.X = -e.GetPosition(map).X;
+            //map_tr.Y = -e.GetPosition(map).Y;
+            //MessageBox.Show(e.GetPosition(map).X.ToString());
+
+
+            //map.LayoutTransform = map_tg;
+            //map.UpdateLayout();
+        }
+
+        private void map_holder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            map_drag = true;
+            map_prev_X = e.GetPosition(map).X;
+            map_prev_Y = e.GetPosition(map).Y;
+        }
+
+        private void map_holder_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            map_drag = false;
+        }
+
+        private void map_holder_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (map_drag)
+            {
+                map_tr.X += (e.GetPosition(map).X - map_prev_X) * map_sc.ScaleX;
+                map_tr.Y += (e.GetPosition(map).Y - map_prev_Y) * map_sc.ScaleY;
+                map_prev_X = e.GetPosition(map).X;
+                map_prev_Y = e.GetPosition(map).Y;
+            }
         }
 
 

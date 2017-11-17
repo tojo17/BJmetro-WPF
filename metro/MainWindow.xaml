@@ -4,18 +4,22 @@
         xmlns:Controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit" x:Class="metro.MainWindow"
         Title="Beijing Metro" Height="640" Width="980" Loaded="Window_Loaded">
     <Grid>
-        <Canvas x:Name="map" Unloaded="map_Unloaded" Margin="0,0,-0.4,0.4">
+        <Canvas x:Name="map_holder" Margin="0,0,-0.4,0.4" MouseWheel="map_holder_MouseWheel" Background="White" MouseLeftButtonDown="map_holder_MouseLeftButtonDown" MouseLeftButtonUp="map_holder_MouseLeftButtonUp" MouseMove="map_holder_MouseMove">
 
+            <Canvas x:Name="map" Unloaded="map_Unloaded" Margin="0,0,-0.4,0.4" RenderTransformOrigin="0.5,0.5">
+                <Canvas.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform x:Name="map_sc"/>
+                        <TranslateTransform x:Name="map_tr"/>
+                    </TransformGroup>
+                </Canvas.RenderTransform>
+            </Canvas>
         </Canvas>
-        <ListBox Height="180" Canvas.Left="31" Canvas.Top="125" Width="227" Margin="10,134,736.6,296.4">
-            <ListBoxItem Content="test2"/>
-            <ListBoxItem Content="test1"/>
-        </ListBox>
         <TabControl HorizontalAlignment="Left" Height="102" Margin="10,10,0,0" VerticalAlignment="Top" Width="226">
             <TabItem Header="Transfer Query">
                 <Grid Background="#FFE5E5E5">
-                    <Controls:AutoCompleteBox x:Name="txtStart" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Width="150" Height="22"/>
-                    <Controls:AutoCompleteBox x:Name="txtEnd" HorizontalAlignment="Center" Margin="0,0,0,10" VerticalAlignment="Bottom" Width="150" Height="22"/>
+                    <Controls:AutoCompleteBox x:Name="txtStart" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Width="150" Height="22" Text="西直门"/>
+                    <Controls:AutoCompleteBox x:Name="txtEnd" HorizontalAlignment="Center" Margin="0,0,0,10" VerticalAlignment="Bottom" Width="150" Height="22" Text="大望路"/>
                     <Button x:Name="btnQuery" Content="Q" HorizontalAlignment="Right" Margin="0,0,5,0" VerticalAlignment="Center" Width="23" Height="22" HorizontalContentAlignment="Center" Background="#FFDDDDDD" Click="btnQuery_Click"/>
                     <Button x:Name="btnSwitch" Content="↑↓" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" Width="23" Height="22" HorizontalContentAlignment="Center" Background="#FFDDDDDD" Click="btnSwitch_Click"/>
                 </Grid>
