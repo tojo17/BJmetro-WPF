@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
+using System.Windows.Shapes;
 
 namespace metro
 {
+
     struct NodePair
     {
         public int from;

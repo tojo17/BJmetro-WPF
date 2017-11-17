@@ -78,6 +78,7 @@ namespace metro
                 graph.addNode(reader.GetInt32(0));
 
                 Ellipse station = new Ellipse();
+                station.Tag = reader.GetInt32(0); //id
                 station.StrokeThickness = 2;
                 station.Stroke = Brushes.Black;
                 station.Fill = Brushes.White;
@@ -87,6 +88,11 @@ namespace metro
                 Canvas.SetTop(station, reader.GetInt32(3) - station.Width / 2);
                 Canvas.SetZIndex(station, 2);
                 map.Children.Add(station);
+                // add station event handler
+                station.MouseEnter += new MouseEventHandler(this.station_Enter);
+                station.MouseLeave += new MouseEventHandler(this.station_Leave);
+                station.MouseRightButtonUp += new MouseButtonEventHandler(this.station_MouseRightButtonUp);
+                station.MouseLeftButtonUp += new MouseButtonEventHandler(this.station_MouseLeftButtonUp);
                 stations.Add(reader.GetInt32(0), station);
 
                 TextBlock sName = new TextBlock();
@@ -293,6 +299,23 @@ namespace metro
             map_Reset();
         }
 
+        private void station_Enter(object sender, MouseEventArgs e)
+        {
+            (sender as Ellipse).Fill = Brushes.OrangeRed;
+        }
+        private void station_Leave(object sender, MouseEventArgs e)
+        {
+            (sender as Ellipse).Fill = Brushes.White;
+        }
 
+        private void station_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            txtEnd.Text = names[(int)(sender as Ellipse).Tag].Text;
+        }
+
+        private void station_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            txtStart.Text = names[(int)(sender as Ellipse).Tag].Text;
+        }
     }
 }
