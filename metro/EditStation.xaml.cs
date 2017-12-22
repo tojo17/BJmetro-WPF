@@ -61,20 +61,16 @@ namespace metro
                     txtStation.Text, Int32.Parse(txtX.Text), Int32.Parse(txtY.Text), lstRoutes.Items.Count, station.id);
                 cmdQ = new SQLiteCommand(sql, mw.conn);
                 cmdQ.ExecuteNonQuery();
+                // remove routes
+                sql = "delete from routes where \"from\"=\"" + station.id.ToString() + "\" or \"to\"=\"" + station.id.ToString() + "\"";
+                cmdQ = new SQLiteCommand(sql, mw.conn);
+                cmdQ.ExecuteNonQuery();
                 foreach (Route r in routes)
                 {
-                    if (r.id != -1)
-                    {
-                        // old routes
-                        sql = string.Format("update routes set \"from\"={0}, \"to\"={1}, line={2}, length={3} where id={4}",
-                            station.id, r.to, r.line, r.length, r.id);
-                    }
-                    else
-                    {
-                        // new route
-                        sql = string.Format("insert into routes (\"from\", \"to\", line, length) values({0}, {1}, {2}, {3})",
-                            station.id, r.to, r.line, r.length);
-                    }
+                    // add route back
+                    sql = string.Format("insert into routes (\"from\", \"to\", line, length) values({0}, {1}, {2}, {3})",
+                        station.id, r.to, r.line, r.length);
+
                     cmdQ = new SQLiteCommand(sql, mw.conn);
                     cmdQ.ExecuteNonQuery();
                 }
@@ -238,7 +234,17 @@ namespace metro
 
         private void btnRemoveRoute_clk(object sender, RoutedEventArgs e)
         {
+            if (lstRoutes.SelectedIndex == -1)
+            {
+                MessageBox.Show("No route selected, cannot delete,");
+            }
+            else
+            {
+                int selected = lstRoutes.SelectedIndex;
+                lstRoutes.Items.RemoveAt(selected);
+                routes.RemoveAt(selected);
 
+            }
         }
 
 
