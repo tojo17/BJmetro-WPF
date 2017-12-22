@@ -68,6 +68,8 @@ namespace metro
             //nodes = new Dictionary<int, Node>();
             //edges = new List<Edge>();
         }
+
+        // add node
         public void addNode(int stationId)
         {
             //Node n = new Node();

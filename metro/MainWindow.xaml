@@ -2,9 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit" x:Class="metro.MainWindow"
-        Title="Beijing Metro" Height="640" Width="980" Loaded="Window_Loaded">
+        Title="Beijing Metro" Height="640" Width="980" Loaded="Window_Loaded" Icon="logo_80.ico">
     <Grid>
-        <Canvas x:Name="map_holder" Margin="0,0,-0.4,0.4" MouseWheel="map_holder_MouseWheel" Background="White" MouseLeftButtonDown="map_holder_MouseLeftButtonDown" MouseLeftButtonUp="map_holder_MouseLeftButtonUp" MouseMove="map_holder_MouseMove" MouseRightButtonUp="map_holder_MouseRightButtonUp">
+        <Canvas x:Name="map_holder" Margin="3,10,-3,-10" MouseWheel="map_holder_MouseWheel" Background="White" MouseLeftButtonDown="map_holder_MouseLeftButtonDown" MouseLeftButtonUp="map_holder_MouseLeftButtonUp" MouseMove="map_holder_MouseMove" MouseRightButtonUp="map_holder_MouseRightButtonUp">
 
             <Canvas x:Name="map" Unloaded="map_Unloaded" Margin="0,0,-0.4,0.4" RenderTransformOrigin="0.5,0.5">
                 <Canvas.RenderTransform>
@@ -16,20 +16,32 @@
             </Canvas>
 
         </Canvas>
-        <ListBox x:Name="lstStations" HorizontalAlignment="Left" Margin="10,117,0,0" VerticalAlignment="Top" Width="226" Height="102" Visibility="Hidden" >
+        <ListBox x:Name="lstStations" HorizontalAlignment="Left" Margin="10,157,0,0" VerticalAlignment="Top" Width="226" Height="102" Visibility="Hidden" >
         </ListBox>
-        <TabControl HorizontalAlignment="Left" Height="102" Margin="10,10,0,0" VerticalAlignment="Top" Width="226">
+        <Canvas x:Name="panel_attraction" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" Width="201" Height="439" Background="#B20097FF" Visibility="Hidden">
+            <Label x:Name="lbl_att_name" Content="Label" Height="47" Width="200" Canvas.Top="10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16" FontWeight="Bold"/>
+            <TextBlock x:Name="txt_lbl_detail" TextWrapping="Wrap" Text="TextBlock" Height="333" Canvas.Top="96" Width="200" FontSize="14" FontFamily="Segoe UI Semibold" LineHeight="9"/>
+        </Canvas>
+        <TabControl x:Name="main_tab" HorizontalAlignment="Left" Height="122" Margin="10,10,0,0" VerticalAlignment="Top" Width="226">
             <TabItem Header="Transfer Query">
                 <Grid Background="#FFE5E5E5">
                     <Controls:AutoCompleteBox x:Name="txtStart" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Width="150" Height="22" Text="西直门"/>
-                    <Controls:AutoCompleteBox x:Name="txtEnd" HorizontalAlignment="Center" Margin="0,0,0,10" VerticalAlignment="Bottom" Width="150" Height="22" Text="大望路"/>
-                    <Button x:Name="btnQuery" Content="Q" HorizontalAlignment="Right" Margin="0,0,5,0" VerticalAlignment="Center" Width="23" Height="22" HorizontalContentAlignment="Center" Background="#FFDDDDDD" Click="btnQuery_Click"/>
-                    <Button x:Name="btnSwitch" Content="↑↓" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" Width="23" Height="22" HorizontalContentAlignment="Center" Background="#FFDDDDDD" Click="btnSwitch_Click"/>
+                    <Controls:AutoCompleteBox x:Name="txtEnd" HorizontalAlignment="Center" Margin="35,0,35,35" VerticalAlignment="Bottom" Width="150" Height="22" Text="大望路"/>
+                    <Button x:Name="btnQuery" Content="Q" HorizontalAlignment="Right" Margin="0,27,7,45" VerticalAlignment="Center" Width="23" Height="22" HorizontalContentAlignment="Center" Background="#FFDDDDDD" Click="btnQuery_Click" IsDefault="True"/>
+                    <Button x:Name="btnSwitch" Content="↑↓" HorizontalAlignment="Left" Margin="7,27,0,45" VerticalAlignment="Center" Width="23" Height="22" HorizontalContentAlignment="Center" Background="#FFDDDDDD" Click="btnSwitch_Click"/>
+                    <ComboBox x:Name="cbo_line_op1" Canvas.Left="10" Canvas.Top="125" Margin="35,64,0,0" Width="45" Height="22" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <ComboBox x:Name="cbo_line_op2" Canvas.Left="10" Canvas.Top="125" Margin="85,64,0,0" Width="100" Height="22" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <Button x:Name="btnEdit" Content="..." HorizontalAlignment="Right" Margin="0,64,7,8" VerticalAlignment="Center" Width="23" Height="22" HorizontalContentAlignment="Center" Background="#FFDDDDDD" Click="btnEdit_Click"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Tourist attraction" RenderTransformOrigin="0.5,0.5">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5">
+                    <Controls:AutoCompleteBox x:Name="txtAttraction" HorizontalAlignment="Center" Margin="10,10,38,0" VerticalAlignment="Top" Width="172" Height="22" Text="东四胡同"/>
+                    <Button x:Name="btnQueryAttract" Content="Q" HorizontalAlignment="Right" Margin="0,10,10,62" VerticalAlignment="Center" Width="23" Height="22" HorizontalContentAlignment="Center" Background="#FFDDDDDD" Click="btnQueryAttraction_Click"/>
+                    <Label x:Name="lblAttStation" Content="" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Width="200" Height="47"/>
+                </Grid>
             </TabItem>
         </TabControl>
+
     </Grid>
 </Window>
