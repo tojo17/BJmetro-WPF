@@ -21,9 +21,9 @@
         <Controls:AutoCompleteBox x:Name="txtTo" HorizontalAlignment="Left" Margin="274,98,0,0" VerticalAlignment="Top" Width="89" Height="22"/>
         <Button Content="Save" HorizontalAlignment="Left" Margin="274,12,0,0" VerticalAlignment="Top" Width="89" Height="22" Click="Save_Click"/>
         <Button Content="Delete" HorizontalAlignment="Left" Margin="274,40,0,0" VerticalAlignment="Top" Width="89" Height="22" Click="Delete_Click"/>
-        <Button Content="+" HorizontalAlignment="Left" Margin="31,97,0,0" VerticalAlignment="Top" Width="20" Height="20"/>
-        <Button Content="-" HorizontalAlignment="Left" Margin="31,122,0,0" VerticalAlignment="Top" Width="20" Height="20"/>
-        <Button Content="√" HorizontalAlignment="Left" Margin="31,147,0,0" VerticalAlignment="Top" Width="20" Height="20"/>
+        <Button Content="+" HorizontalAlignment="Left" Margin="31,97,0,0" VerticalAlignment="Top" Width="20" Height="20" Click="btnAddRoute_clk"/>
+        <Button Content="-" HorizontalAlignment="Left" Margin="31,122,0,0" VerticalAlignment="Top" Width="20" Height="20" Click="btnRemoveRoute_clk"/>
+        <Button Content="√" HorizontalAlignment="Left" Margin="31,147,0,0" VerticalAlignment="Top" Width="20" Height="20" Click="btnSaveRoute_clk"/>
         <Button Content="About" HorizontalAlignment="Left" Margin="288,174,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
         <Button Content="Q" HorizontalAlignment="Left" Margin="195,12,0,0" VerticalAlignment="Top" Width="20" Height="22" Click="btnQuery_clk" IsDefault="True"/>
 

@@ -52,14 +52,22 @@ namespace metro
                     cmdQ = new SQLiteCommand(sql, mw.conn);
                     cmdQ.ExecuteNonQuery();
                 }
-                mw.initData();
-                this.btnQuery_clk();
 
             }
             else
             {
                 // update old station
-                MessageBox.Show("This station is not saved yet.");
+                sql = String.Format("update stations set name=\"{0}\", pos_x={1}, pos_y={2}, route_count={3} where id={4}",
+                    txtStation.Text, Int32.Parse(txtX.Text), Int32.Parse(txtY.Text), lstRoutes.Items.Count, station.id);
+                cmdQ = new SQLiteCommand(sql, mw.conn);
+                cmdQ.ExecuteNonQuery();
+                foreach (Route r in routes)
+                {
+                    sql = string.Format("update routes set \"from\"={0}, \"to\"={1}, line={2}, length={3} where id={4}",
+                        station.id, r.to, r.line, r.length, r.id);
+                    cmdQ = new SQLiteCommand(sql, mw.conn);
+                    cmdQ.ExecuteNonQuery();
+                }
             }
             mw.initData();
             this.btnQuery_clk();
@@ -83,13 +91,13 @@ namespace metro
 
         private void lstRoutes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (lstRoutes.Items.Count > 0)
+            if (lstRoutes.Items.Count > 0 && lstRoutes.SelectedIndex >= 0)
             {
                 txtLine.Text = routes[lstRoutes.SelectedIndex].line.ToString();
                 txtLength.Text = routes[lstRoutes.SelectedIndex].length.ToString();
                 txtTo.Text = readStationName(routes[lstRoutes.SelectedIndex].to);
             }
-            
+
         }
 
         private void btnQuery_clk(object sender = null, RoutedEventArgs e = null)
@@ -145,9 +153,9 @@ namespace metro
             // remove station
             if (station.id != -1)
             {
-                if(MessageBox.Show("Do you really want to delete station "
+                if (MessageBox.Show("Do you really want to delete station "
                     + readStationName(station.id) + "?"
-                    ,"Confirm",MessageBoxButton.OKCancel)==MessageBoxResult.OK)
+                    , "Confirm", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
                     int rm_s, rm_r;
                     sql = "delete from stations where id=" + station.id.ToString();
@@ -166,6 +174,46 @@ namespace metro
                 MessageBox.Show("This station is not saved yet.");
             }
         }
+
+        private void btnSaveRoute_clk(object sender, RoutedEventArgs e)
+        {
+            if (lstRoutes.SelectedIndex == -1)
+            {
+                MessageBox.Show("No route selected, cannot save.");
+            }
+            else
+            {
+                int selected = lstRoutes.SelectedIndex;
+                sql = "select * from stations where name=\"" + txtTo.Text + "\"";
+                cmdQ = new SQLiteCommand(sql, mw.conn);
+                reader = cmdQ.ExecuteReader();
+                if (reader.Read())
+                {
+                    MessageBox.Show(selected.ToString());
+                    routes[selected].line = Int32.Parse(txtLine.Text);
+                    routes[selected].to = reader.GetInt32(0);
+                    routes[selected].length = Int32.Parse(txtLength.Text);
+                    lstRoutes.Items[selected] = txtTo.Text;
+
+                }
+                else
+                {
+                    MessageBox.Show("TO station not exist!");
+                }
+
+            }
+        }
+
+        private void btnAddRoute_clk(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnRemoveRoute_clk(object sender, RoutedEventArgs e)
+        {
+
+        }
+
 
     }
 }
