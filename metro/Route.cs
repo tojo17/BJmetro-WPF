@@ -19,6 +19,7 @@ namespace metro
         public Brush color;
         public Route()
         {
+            id = -1;
             map_line = new Line();
         }
     }

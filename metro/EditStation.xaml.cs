@@ -63,8 +63,18 @@ namespace metro
                 cmdQ.ExecuteNonQuery();
                 foreach (Route r in routes)
                 {
-                    sql = string.Format("update routes set \"from\"={0}, \"to\"={1}, line={2}, length={3} where id={4}",
-                        station.id, r.to, r.line, r.length, r.id);
+                    if (r.id != -1)
+                    {
+                        // old routes
+                        sql = string.Format("update routes set \"from\"={0}, \"to\"={1}, line={2}, length={3} where id={4}",
+                            station.id, r.to, r.line, r.length, r.id);
+                    }
+                    else
+                    {
+                        // new route
+                        sql = string.Format("insert into routes (\"from\", \"to\", line, length) values({0}, {1}, {2}, {3})",
+                            station.id, r.to, r.line, r.length);
+                    }
                     cmdQ = new SQLiteCommand(sql, mw.conn);
                     cmdQ.ExecuteNonQuery();
                 }
@@ -189,7 +199,6 @@ namespace metro
                 reader = cmdQ.ExecuteReader();
                 if (reader.Read())
                 {
-                    MessageBox.Show(selected.ToString());
                     routes[selected].line = Int32.Parse(txtLine.Text);
                     routes[selected].to = reader.GetInt32(0);
                     routes[selected].length = Int32.Parse(txtLength.Text);
@@ -206,7 +215,25 @@ namespace metro
 
         private void btnAddRoute_clk(object sender, RoutedEventArgs e)
         {
+            sql = "select * from stations where name=\"" + txtTo.Text + "\"";
+            cmdQ = new SQLiteCommand(sql, mw.conn);
+            reader = cmdQ.ExecuteReader();
+            if (reader.Read())
+            {
+                Route r = new Route();
 
+                r.line = Int32.Parse(txtLine.Text);
+                r.to = reader.GetInt32(0);
+                r.length = Int32.Parse(txtLength.Text);
+                routes.Add(r);
+                lstRoutes.Items.Add(txtTo.Text);
+                lstRoutes.SelectedIndex = lstRoutes.Items.Count - 1;
+
+            }
+            else
+            {
+                MessageBox.Show("TO station not exist!");
+            }
         }
 
         private void btnRemoveRoute_clk(object sender, RoutedEventArgs e)
