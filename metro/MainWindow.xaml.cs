@@ -53,6 +53,8 @@ namespace metro
             auto_complete_attracton_names = new List<string>();
 
             // init combo box
+            cbo_line_op1.Items.Clear();
+            cbo_line_op2.Items.Clear();
             cbo_line_op1.Items.Add("1st");
             cbo_line_op1.Items.Add("2nd");
             cbo_line_op1.Items.Add("3rd");

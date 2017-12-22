@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="metro.EditStation">
+    <Position X="6" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAgAAAQASAAAAAAAIAEFABAAEEAAAAAAAAAAQAEA=</HashCode>
+      <FileName>EditStation.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="metro.MainWindow">
+    <Position X="8" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQCAkAAAIQCBAggAAAAAEhCOARIAAiCIYQAAgCQAAA=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="metro.Graph">
+    <Position X="1.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAIAIAAAAAAAAAAAABAAAAAAAAAgAAAAAIAI=</HashCode>
+      <FileName>Graph.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="metro.Route">
+    <Position X="4" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAIAAAAAAAAAAEAAAEgAAAAAAACAAAAAAAAAAgA=</HashCode>
+      <FileName>Route.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="metro.Station">
+    <Position X="4" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAQAAACAAAAEAAAMAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Station.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
