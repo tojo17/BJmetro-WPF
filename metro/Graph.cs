@@ -8,6 +8,186 @@ using System.Windows.Shapes;
 
 namespace metro
 {
+    /*class PriorityQueue<T>
+    {
+        IComparer comparer;
+        T[] heap;
+
+        public int Count { get; private set; }
+
+        public PriorityQueue() : this(null) { }
+        public PriorityQueue(int capacity) : this(capacity, null) { }
+        public PriorityQueue(IComparer comparer) : this(16, comparer) { }
+
+        public PriorityQueue(int capacity, IComparer comparer)
+        {
+            this.comparer = (comparer == null) ? Comparer.Default : comparer;
+            this.heap = new T[capacity];
+        }
+
+        public void Push(T v)
+        {
+            if (Count >= heap.Length) Array.Resize(ref heap, Count * 2);
+            heap[Count] = v;
+            SiftUp(Count++);
+        }
+
+        public T Pop()
+        {
+            var v = Top();
+            heap[0] = heap[--Count];
+            if (Count > 0) SiftDown(0);
+            return v;
+        }
+
+        public T Top()
+        {
+            if (Count > 0) return heap[0];
+            throw new InvalidOperationException("empty");
+        }
+
+        void SiftUp(int n)
+        {
+            var v = heap[n];
+            for (var n2 = n / 2; n > 0 && comparer.Compare(v, heap[n2]) > 0; n = n2, n2 /= 2)
+
+                heap[n] = heap[n2];
+            heap[n] = v;
+        }
+
+        void SiftDown(int n)
+        {
+            var v = heap[n];
+            for (var n2 = n * 2; n2 < Count; n = n2, n2 *= 2)
+            {
+                if (n2 + 1 < Count && comparer.Compare(heap[n2 + 1], heap[n2]) > 0) n2++;
+                if (comparer.Compare(v, heap[n2]) >= 0) break;
+                heap[n] = heap[n2];
+            }
+            heap[n] = v;
+        }
+    }
+
+
+    struct Edge
+    {
+        public int v; //edge's node
+        public int len;
+    }
+
+    class Node : IComparable<Node>
+    {
+        public int v;
+        public int len;
+        public int[] dist;
+        public Node(int a = 0, int b = 0, int[] dist = null)
+        {
+            v = a;
+            len = b;
+            this.dist= dist;
+        }
+        public int CompareTo(Node obj)
+        {
+            return (len + dist[v] > obj.len + dist[obj.v]) ? 1 : 0;
+        }
+
+    }
+
+
+
+
+    class Graph
+    {
+        const int INF = 999999999;
+        int N;  // node count
+        int M; // edge count
+        int[] dist;
+        int[] cnt;
+        bool[] mark;
+        int[,] adj; // graph
+        // Dictionary<int, Edge> rev; // reverse graph
+        public Graph()
+        {
+            N = 0;
+            M = 0;
+            dist = new int[500];
+            cnt = new int[500];
+            mark = new bool[500];
+            adj = new int[500, 500];
+
+        }
+
+
+        public void addEdge(int u, int v, int l)
+        {
+            // from, to, length
+            M++;
+            adj[u, v] = l;
+            adj[v, u] = l;
+
+        }
+
+
+        public void addNode()
+        {
+            N++;
+        }
+
+        // Dijkstra find least distance to T
+        public void Dijkstra(int S, int T) // from S to T
+        {
+            for (int i = 1; i <= N; i++)
+                mark[i] = false;
+            for (int i = 1; i <= N; i++)
+                dist[i] = INF;
+            dist[T] = 0;
+            int u, v, min;
+            while (true)
+            {
+                u = -1;
+                min = INF;
+                for (int i = 1; i <= N; i++)
+                    if (!mark[i] && dist[i] < min)
+                    {
+                        min = dist[i];
+                        u = i;
+                    }
+                if (u == -1) break;
+                mark[u] = true;
+                for (int k = 0; k < M; k++)
+                {
+                    v = adj[u, k];
+                    if (!mark[v] && dist[v] > dist[u] + adj[u, k])
+                        dist[v] = dist[u] + adj[u, k];
+                }
+            }
+
+        }
+
+        public int Astar(int S, int T, int K) // from S to T, K short
+        {
+            if (dist[S] == INF) return -1;
+            for (int i = 0; i < N; i++)
+                cnt[i] = 0;
+            PriorityQueue<Node> Q = new PriorityQueue<Node>();
+            Q.Push(new Node(S, 0, dist));
+            while (Q.Count!=0)
+            {
+                int len = Q.Top().len;
+                int v = Q.Top().v;
+                Q.Pop();
+                cnt[v]++;
+                if (cnt[T] == K)
+                    return len;
+                if (cnt[v] > K)
+                    continue;
+                for (int i = 0; i < N; i++)
+                    Q.Push(new Node(adj[v, i], len + adj[v, i], dist));
+            }
+            return -1;
+        }
+
+    }*/
 
     struct NodePair
     {
@@ -45,6 +225,7 @@ namespace metro
         //}
 
     }
+
     class Graph
     {
         public Dictionary<NodePair, Edge> edges;
@@ -202,7 +383,7 @@ namespace metro
         }
         public int Astar(int from, int to, int k)
         {
-  
+
 
             Dictionary<int, int> distance = dijkstra(to);
             if (!distance.ContainsKey(from)) return -1;

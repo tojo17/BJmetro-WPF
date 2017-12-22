@@ -83,8 +83,8 @@ namespace metro
             while (reader.Read())
             {
                 // counting graph add node
+                //graph.addNode();
                 graph.addNode(reader.GetInt32(0));
-
                 Station s = new Station();
                 s.id = reader.GetInt32(0);
                 s.name = reader.GetString(1);
@@ -133,7 +133,6 @@ namespace metro
             {
                 graph.addEdge(reader.GetInt32(0), reader.GetInt32(1),
                     reader.GetInt32(2), reader.GetInt32(3), reader.GetInt32(4));
-
                 Route route = new Route();
                 route.id = reader.GetInt32(0);
                 route.from = reader.GetInt32(1);
@@ -150,6 +149,8 @@ namespace metro
                 Canvas.SetZIndex(route.map_line, 1);
                 map.Children.Add(route.map_line);
                 d_routes.Add(route.id, route);
+
+                //graph.addEdge(route.from, route.to, route.length);
             }
 
             // read attractions
@@ -231,32 +232,34 @@ namespace metro
                 return;
             }
 
-            /*Dictionary<int, int> res = graph.dijkstra(_from);
+            // MessageBox.Show(graph.Astar(_from, _to, 1).ToString());
+
+            Dictionary<int, int> res = graph.dijkstra(_from);
 
             int[] r = graph.dijM(_from);
             //for (int i=1;i<=graph.nodes.Count;i++){
             //    MessageBox.Show(names[i].Text + r[i].ToString());
             //}
-            foreach (Line l in routes.Values)
+            foreach (Route _r in d_routes.Values)
             {
                 // l.Stroke = Brushes.Gray;
-                l.StrokeThickness = 6;
+                _r.map_line.StrokeThickness = 6;
             }
             int _line_num = graph.edges[new NodePair(_to, r[_to])].line;
             long _length = 0;
-            lstStations.Items.Add("Start at: " + names[_to].Text);
+            lstStations.Items.Add("Start at: " + d_stations[_to].name);
             while (r[_to] != 0)
             {
 
                 //MessageBox.Show(names[_to].Text);
                 NodePair np = new NodePair(_to, r[_to]);
-                routes[graph.edges[np].routeId].Stroke = Brushes.Green;
-                routes[graph.edges[np].routeId].StrokeThickness = 10;
+                d_routes[graph.edges[np].routeId].map_line.Stroke = Brushes.Green;
+                d_routes[graph.edges[np].routeId].map_line.StrokeThickness = 10;
 
                 if (graph.edges[np].line != _line_num)
                 {
-                    lstStations.Items.Add("↓ Line " + _line_num + ": " + _length + " km");
-                    lstStations.Items.Add("Transfer at: " + names[_to].Text);
+                    lstStations.Items.Add("↓ Line " + _line_num + ": " + _length + " m");
+                    lstStations.Items.Add("Transfer at: " + d_stations[_to].name);
                     _length = 0;
                 }
                 _length += graph.edges[np].length;
@@ -268,11 +271,11 @@ namespace metro
 
 
 
-            routes[graph.edges[new NodePair(_to, _from)].routeId].Stroke = Brushes.Green;
-            routes[graph.edges[new NodePair(_to, _from)].routeId].StrokeThickness = 10;
+            d_routes[graph.edges[new NodePair(_to, _from)].routeId].map_line.Stroke = Brushes.Green;
+            d_routes[graph.edges[new NodePair(_to, _from)].routeId].map_line.StrokeThickness = 10;
             _length += graph.edges[new NodePair(_to, _from)].length;
-            lstStations.Items.Add("↓ Line " + _line_num + ": " + _length + " km");
-            lstStations.Items.Add("Arrive at: " + names[_from].Text);
+            lstStations.Items.Add("↓ Line " + _line_num + ": " + _length + " m");
+            lstStations.Items.Add("Arrive at: " + d_stations[_from].name);
 
             lstStations.Visibility = Visibility.Visible;
             lstStations.Height = lstStations.Items.Count * (lstStations.FontSize + 10);
@@ -280,7 +283,7 @@ namespace metro
             //{
             //    MessageBox.Show(names[i.Key].Text + i.Value.ToString());
             //}
-            */
+            
 
         }
 
