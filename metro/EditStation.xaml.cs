@@ -29,6 +29,7 @@ namespace metro
         public EditStation()
         {
             InitializeComponent();
+            station = new Station();
             mw = MainWindow.main_window;
             txtStation.ItemsSource = mw.auto_complete_station_names;
             txtTo.ItemsSource = mw.auto_complete_station_names;
@@ -36,6 +37,30 @@ namespace metro
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
+            // save station
+            if (station.id == -1)
+            {
+                // new station
+                sql = String.Format("insert into stations (name, pos_x, pos_y, route_count) values(\"{0}\", {1}, {2}, {3});select last_insert_rowid()",
+                    txtStation.Text, Int32.Parse(txtX.Text), Int32.Parse(txtY.Text), lstRoutes.Items.Count);
+                cmdQ = new SQLiteCommand(sql, mw.conn);
+                station.id = Int32.Parse(cmdQ.ExecuteScalar().ToString());
+                foreach (Route r in routes)
+                {
+                    sql = String.Format("insert into routes (\"from\", \"to\", line, length) values({0}, {1}, {2}, {3})",
+                        station.id, r.to, r.line, r.length);
+                    cmdQ = new SQLiteCommand(sql, mw.conn);
+                    cmdQ.ExecuteNonQuery();
+                }
+                mw.initData();
+                this.btnQuery_clk();
+
+            }
+            else
+            {
+                // update old station
+                MessageBox.Show("This station is not saved yet.");
+            }
             mw.initData();
             this.btnQuery_clk();
         }
@@ -118,17 +143,27 @@ namespace metro
         private void Delete_Click(object sender, RoutedEventArgs e)
         {
             // remove station
-            if (station.id != null)
+            if (station.id != -1)
             {
-                if(MessageBox.Show("Do you really want to delete this station?","Confirm",MessageBoxButton.OKCancel)==MessageBoxResult.OK)
+                if(MessageBox.Show("Do you really want to delete station "
+                    + readStationName(station.id) + "?"
+                    ,"Confirm",MessageBoxButton.OKCancel)==MessageBoxResult.OK)
                 {
+                    int rm_s, rm_r;
                     sql = "delete from stations where id=" + station.id.ToString();
                     cmdQ = new SQLiteCommand(sql, mw.conn);
-                    MessageBox.Show(cmdQ.ExecuteNonQuery().ToString());
+                    rm_s = cmdQ.ExecuteNonQuery();
                     sql = "delete from routes where \"from\"=\"" + station.id.ToString() + "\" or \"to\"=\"" + station.id.ToString() + "\"";
                     cmdQ = new SQLiteCommand(sql, mw.conn);
-                    MessageBox.Show(cmdQ.ExecuteNonQuery().ToString());
+                    rm_r = cmdQ.ExecuteNonQuery();
+                    MessageBox.Show("Deleted " + rm_s.ToString() + " stations and " + rm_r.ToString() + " routes.");
+                    mw.initData();
+                    station.id = -1;
                 }
+            }
+            else
+            {
+                MessageBox.Show("This station is not saved yet.");
             }
         }
 

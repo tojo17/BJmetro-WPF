@@ -21,6 +21,7 @@ namespace metro
 
         public Station()
         {
+            id = -1;
             map_dot = new Ellipse();
             map_label = new TextBlock();
         }
